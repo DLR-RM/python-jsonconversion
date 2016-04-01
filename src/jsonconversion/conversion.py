@@ -13,12 +13,17 @@ def string2type(string_value):
     if isinstance(string_value, type) or isclass(string_value):
         return string_value
 
+    # Special case, which cannot be handled otherwise
+    if string_value == "NoneType":
+        return type(None)
+
     # Get object associated with string
     # First check whether we are having a built in type (int, str, etc)
     if hasattr(__builtin__, string_value):
         obj = getattr(__builtin__, string_value)
         if type(obj) is type:
             return obj
+
     # If not, try to locate the module
     try:
         obj = locate(string_value)
