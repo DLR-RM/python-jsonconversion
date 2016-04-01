@@ -1,4 +1,5 @@
 from testing_utils import convert_with_assertion
 
 def test_types():
-    convert_with_assertion(int)
+    for _type in [int, float, str, type, complex, list, dict, set, tuple, type(None)]:
+        convert_with_assertion(_type)
