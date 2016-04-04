@@ -5,3 +5,5 @@ arch:
 
 doc:
   - echo "No documentation to build"
+
+doc_dir: ''
