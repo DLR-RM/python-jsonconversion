@@ -1,3 +1,5 @@
+[![BuildBot Status](http://rmc-chimaere:8010/badge.png?builder=common/python-jsonconversion&branch=master)](http://rmc-chimaere:8010/builders/common%2Fpython-jsonconversion/)
+
 # JSON Conversion
 
 This python module helps converting arbitrary Python objects into JSON strings and back. For this purpose,
