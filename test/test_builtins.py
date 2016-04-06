@@ -12,9 +12,13 @@ def test_numbers():
 def test_strings():
     c = 'a'
     s = 'abc'
+    i = '3'
+    f = '3.14'
 
     convert_with_assertion(c)
     convert_with_assertion(s)
+    convert_with_assertion(i)
+    convert_with_assertion(f)
 
 
 def test_lists():
