@@ -1,3 +1,5 @@
+
+import json
 from json.decoder import JSONDecoder
 from jsonconversion.conversion import string2type
 
@@ -38,7 +40,14 @@ class JSONObjectDecoder(JSONDecoder):
 
             # Recursively decode JSONObject
             for key, value in dictionary.iteritems():
-                dictionary[key] = self.decode(dictionary[key])
+                # Actually, dictionary[key] = self.decode(dictionary[key]) would be sufficient here
+                # The instance check and the try..except block is needed for backwards compatibility
+                if isinstance(value, basestring):
+                    try:
+                        converted_value = json.loads(dictionary[key], cls=self.__class__)
+                        dictionary[key] = converted_value
+                    except ValueError:
+                        pass
 
             # from_dict must be implemented by classes deriving from JSONObject
             return cls.from_dict(dictionary)

@@ -44,7 +44,7 @@ class JSONObjectEncoder(JSONEncoder):
         :return: Encoded object
         :rtype: dict
         """
-        # Recursive check for tuples and Vividicts (within tuples, dicts and lists)
+        # Recursive check for sequence types
         def check_for_sequences(item):
             if isinstance(item, set):
                 dictionary = {'__jsonqualname__': '__builtin__.set',
