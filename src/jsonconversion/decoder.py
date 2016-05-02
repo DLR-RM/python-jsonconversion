@@ -13,16 +13,22 @@ class JSONObjectDecoder(JSONDecoder):
     """
 
     additional_hook = None
+    substitute_modules = {}
 
     def __init__(self, encoding=None, object_hook=None, **kwargs):
-        super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
+        if isinstance(kwargs.get('substitute_modules', None), dict):
+            self.substitute_modules = kwargs['substitute_modules']
+            del kwargs['substitute_modules']
         self.additional_hook = object_hook
+        super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
 
     def _dict_to_qualified_object(self, dictionary):
         # Handle classes deriving from JSONObject and tuples
         if '__jsonqualname__' in dictionary:
             # e.g. rafcon.statemachine.states.execution_state.ExecutionState
             qualified_name = dictionary.pop('__jsonqualname__')
+            if qualified_name in self.substitute_modules:
+                qualified_name = self.substitute_modules[qualified_name]
             parts = qualified_name.split('.')
             module_name = ".".join(parts[:-1])
             # First ensure, that the module is imported
@@ -44,7 +50,8 @@ class JSONObjectDecoder(JSONDecoder):
                 # The instance check and the try..except block is needed for backwards compatibility
                 if isinstance(value, basestring):
                     try:
-                        converted_value = json.loads(dictionary[key], cls=self.__class__)
+                        converted_value = json.loads(dictionary[key], cls=self.__class__,
+                                                     substitute_modules=self.substitute_modules)
                         dictionary[key] = converted_value
                     except ValueError:
                         pass
