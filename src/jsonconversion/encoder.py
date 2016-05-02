@@ -10,6 +10,10 @@ class JSONObjectEncoder(JSONEncoder):
     int, object, float) are handled. Finally, it is tried to convert dictionary keys to integers.
     """
 
+    def __init__(self, nested_jsonobjects=True, **kwargs):
+        self.nested_jsonobjects = nested_jsonobjects
+        super(JSONObjectEncoder, self).__init__(**kwargs)
+
     def default(self, obj):
         """This method is called after all base class encoding logic
 
@@ -23,8 +27,9 @@ class JSONObjectEncoder(JSONEncoder):
         if isinstance(obj, JSONObject):
             # to_dict must be implemented by classes deriving from JSONObject
             dictionary = obj.to_dict()
-            for key, value in dictionary.iteritems():
-                dictionary[key] = self.encode(value)
+            if self.nested_jsonobjects:
+                for key, value in dictionary.iteritems():
+                    dictionary[key] = self.encode(value)
             # e.g. rafcon.statemachine.states.execution_state.ExecutionState
             dictionary['__jsonqualname__'] = obj.__module__ + '.' + obj.__class__.__name__
             return dictionary
