@@ -1,9 +1,5 @@
-try:
-    import simplejson as json
-    from simplejson.decoder import JSONDecoder
-except ImportError:
-    import json
-    from json.decoder import JSONDecoder
+import json
+from json.decoder import JSONDecoder
 from jsonconversion.conversion import string2type
 
 

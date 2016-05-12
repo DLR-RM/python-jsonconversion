@@ -1,7 +1,4 @@
-try:
-    from simlejson.encoder import JSONEncoder
-except ImportError:
-    from json.encoder import JSONEncoder
+from json.encoder import JSONEncoder
 from jsonconversion.jsonobject import JSONObject
 
 
@@ -15,6 +12,12 @@ class JSONObjectEncoder(JSONEncoder):
 
     def __init__(self, nested_jsonobjects=True, **kwargs):
         self.nested_jsonobjects = nested_jsonobjects
+        for key in ['use_decimal', 'namedtuple_as_object', 'tuple_as_array', 'bigint_as_string', 'item_sort_key',
+                    'for_json', 'ignore_nan']:
+            try:
+                del kwargs[key]
+            except KeyError:
+                pass
         super(JSONObjectEncoder, self).__init__(**kwargs)
 
     def default(self, obj):
