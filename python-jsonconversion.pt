@@ -1,9 +1,8 @@
 PTVERSION           = 2
 NAME                = python-jsonconversion
 MAINTAINER          = Franz Steinmetz <franz.steinmetz@dlr.de>
-DESCRIPTION         = Convert aribtrary Python objects into JSON strings and back
-VERSION             = 0.1.0
-DOCUMENTATION       = https://rmc-github.robotic.dlr.de/stei-fn/python-jsonconversion
+DESCRIPTION         = Convert arbitrary Python objects into JSON strings and back
+DOCUMENTATION       = https://rmc-github.robotic.dlr.de/common/python-jsonconversion
 
 SUPPORTED_LANGUAGES = python
 DEPENDS             =
