@@ -1,5 +1,9 @@
+from inspect import isclass
+from types import ClassType
+
 from json.encoder import JSONEncoder
 from jsonconversion.jsonobject import JSONObject
+from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
 
 
 class JSONObjectEncoder(JSONEncoder):
@@ -37,10 +41,14 @@ class JSONObjectEncoder(JSONEncoder):
                 for key, value in dictionary.iteritems():
                     dictionary[key] = self.encode(value)
             # e.g. rafcon.statemachine.states.execution_state.ExecutionState
-            dictionary['__jsonqualname__'] = obj.__module__ + '.' + obj.__class__.__name__
+            dictionary['__jsonqualname__'] = get_qualified_name_for_class_object(obj)
             return dictionary
 
-        elif isinstance(obj, type):
+        elif isinstance(obj, (type, ClassType)):
+            print "obj", obj, isclass(obj)
+            if isclass(obj):
+                print "quali", get_qualified_name_for_class(obj)
+                return {'__type__': get_qualified_name_for_class(obj)}
             return {'__type__': obj.__name__}
 
         else:

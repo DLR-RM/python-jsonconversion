@@ -1,6 +1,6 @@
 import json
 from json.decoder import JSONDecoder
-from jsonconversion.conversion import string2type
+from jsonconversion.conversion import string2type, get_class_from_qualified_name
 
 
 class JSONObjectDecoder(JSONDecoder):
@@ -28,13 +28,7 @@ class JSONObjectDecoder(JSONDecoder):
             qualified_name = dictionary.pop('__jsonqualname__')
             if qualified_name in self.substitute_modules:
                 qualified_name = self.substitute_modules[qualified_name]
-            parts = qualified_name.split('.')
-            module_name = ".".join(parts[:-1])
-            # First ensure, that the module is imported
-            cls = __import__(module_name)
-            # Find nested class
-            for comp in parts[1:]:
-                cls = getattr(cls, comp)
+            cls = get_class_from_qualified_name(qualified_name)
 
             # Maintain tuples instead of converting them to a list
             if cls is tuple:

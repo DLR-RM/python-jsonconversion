@@ -18,6 +18,8 @@ class JO(JSONObject):
 
     def __eq__(self, other):
         print "types", type(self.a), type(other.a)
+        print self.a, self.b, self.c
+        print other.a, other.b, other.c
         return self.a == other.a and self.b == other.b and self.c == other.c
 
     def __str__(self):

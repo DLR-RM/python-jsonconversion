@@ -14,7 +14,7 @@ def string2type(string_value):
         return string_value
 
     # Special case, which cannot be handled otherwise
-    if string_value == "NoneType":
+    if string_value == "NoneType" or string_value == "__builtin__.NoneType":
         return type(None)
 
     # Get object associated with string
@@ -23,6 +23,9 @@ def string2type(string_value):
         obj = getattr(__builtin__, string_value)
         if type(obj) is type:
             return obj
+
+    if isinstance(string_value, basestring) and '.' in string_value:
+        return get_class_from_qualified_name(string_value)
 
     # If not, try to locate the module
     try:
@@ -40,3 +43,22 @@ def string2type(string_value):
 
     # Raise error if none is the case
     raise ValueError("Unknown type '{0}'".format(string_value))
+
+
+def get_qualified_name_for_class(obj):
+    return obj.__module__ + '.' + obj.__name__
+
+
+def get_qualified_name_for_class_object(obj):
+    return obj.__module__ + '.' + obj.__class__.__name__
+
+
+def get_class_from_qualified_name(qualified_name):
+    parts = qualified_name.split('.')
+    module_name = ".".join(parts[:-1])
+    # First ensure, that the module is imported
+    cls = __import__(module_name)
+    # Find nested class
+    for comp in parts[1:]:
+        cls = getattr(cls, comp)
+    return cls
