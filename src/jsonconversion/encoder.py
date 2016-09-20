@@ -45,9 +45,7 @@ class JSONObjectEncoder(JSONEncoder):
             return dictionary
 
         elif isinstance(obj, (type, ClassType)):
-            print "obj", obj, isclass(obj)
             if isclass(obj):
-                print "quali", get_qualified_name_for_class(obj)
                 return {'__type__': get_qualified_name_for_class(obj)}
             return {'__type__': obj.__name__}
 
