@@ -1,4 +1,6 @@
 import json
+import numpy as np
+
 from json.decoder import JSONDecoder
 from jsonconversion.conversion import string2type, get_class_from_qualified_name
 
@@ -36,6 +38,9 @@ class JSONObjectDecoder(JSONDecoder):
             # Maintain sets instead of converting them to a list
             if cls is set:
                 return set(dictionary['items'])
+            # Maintain NumPy ndarrays
+            if cls is np.ndarray:
+                return np.array(dictionary['items'])
 
             # Recursively decode JSONObject
             for key, value in dictionary.iteritems():

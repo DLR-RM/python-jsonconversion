@@ -1,4 +1,5 @@
 import json
+import numpy as np
 
 from jsonconversion.decoder import JSONObjectDecoder
 from jsonconversion.encoder import JSONObjectEncoder
@@ -16,6 +17,10 @@ def convert(var):
 def convert_with_assertion(var):
     str_var, var_2 = convert(var)
     assert isinstance(str_var, str)
-    assert var == var_2
+    if isinstance(var, (list, np.ndarray)):
+        assert len(var) == len(var_2)
+        assert all([e == e2 for e, e2 in zip(var, var_2)])
+    else:
+        assert var == var_2
     return str_var, var_2
 
