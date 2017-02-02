@@ -1,19 +1,5 @@
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
-from os import path
-import sys
-
-
-def read_version_from_pt_file():
-    pt_file_name = 'python-jsonconversion.pt'
-    pt_file_path = path.join(path.dirname(path.realpath(__file__)), pt_file_name)
-    with open(pt_file_path) as pt_file:
-        for line in pt_file:
-            if line.strip().startswith('VERSION'):
-                parts = line.split('=')
-                version = parts[1].strip()
-                return version
-    return 0
 
 
 class PyTest(TestCommand):
@@ -44,9 +30,9 @@ class PyTest(TestCommand):
 
 setup(
     name='JSON Conversion',
-    version=read_version_from_pt_file(),
+    version='0.1.12',
     url='https://rmc-github.robotic.dlr.de/common/python-jsonconversion',
-    license='LGPL',
+    license='BSD',
     author='Franz Steinmetz',
     maintainer='Franz Steinmetz',
     author_email='franz.steinmetz@dlr.de',
