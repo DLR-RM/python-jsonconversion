@@ -61,7 +61,7 @@ setup(
     # installed or upgraded on the target machine
     # install_requires=['json'],
 
-    tests_require=['pytest'],
+    tests_require=['pytest', 'numpy'],
 
     cmdclass={'test': PyTest},
 )
