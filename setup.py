@@ -30,7 +30,7 @@ class PyTest(TestCommand):
 
 
 setup(
-    name='JSON Conversion',
+    name='jsonconversion',
     version='0.1.12',
     url='https://rmc-github.robotic.dlr.de/common/python-jsonconversion',
     license='BSD',
