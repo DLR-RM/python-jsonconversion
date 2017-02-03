@@ -1,6 +1,9 @@
-import numpy as np
 from inspect import isclass
 from types import ClassType
+try:
+    import numpy as np
+except ImportError:
+    np = False
 
 from json.encoder import JSONEncoder
 from jsonconversion.jsonobject import JSONObject
@@ -50,7 +53,7 @@ class JSONObjectEncoder(JSONEncoder):
                 return {'__type__': get_qualified_name_for_class(obj)}
             return {'__type__': obj.__name__}
 
-        elif isinstance(obj, np.ndarray):
+        elif np and isinstance(obj, np.ndarray):
             return {'__jsonqualname__': "numpy.ndarray", "items": obj.tolist()}
 
         else:
