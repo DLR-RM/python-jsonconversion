@@ -1,31 +1,46 @@
 [![BuildBot Status](http://rmc-chimaere:8010/badge.png?builder=common/python-jsonconversion&branch=master)](http://rmc-chimaere:8010/builders/common%2Fpython-jsonconversion/)
 
-# JSON Conversion
+# `jsonconversion`
 
-This python module helps converting arbitrary Python objects into JSON strings and back. For this purpose,
-three classes are provided:
+This python module helps converting arbitrary Python objects into JSON strings and back. It extends the basic
+features of the native `JSONEncoder` and `JSONDecoder`. For this purpose, four classes are provided:
 
-## JSONObject
+## `JSONObject`
 
-Your own classes should inherit from this class. Hereby, they must implement the methods `from_dict` and
+Your serializable classes should inherit from this class. Hereby, they must implement the methods `from_dict` and
 `to_dict`.
 
-## JSONObjectEncoder
+## `JSONExtendedEncoder`
+
+This is a class used internally by `JSONObjectEncoder`. However, it can also be used directly, if you do not need the
+features of `JSONObjectEncoder` but want to implement your own encoders.
+
+The class is especially helpful, if you want custom handling of builtins (`int`, `dict`, ...) or classes deriving
+from builtins. This would not be possible if directly inheriting from `JSONEncoder`. In order to do so, override the
+`isinstance` method and return `False` for all types you want to handle in the `default` method.
+
+## `JSONObjectEncoder`
 
 Encodes Python objects into JSON strings. Supported objects are:
 
 * Python builtins: `int`, `float`, `str`, `list`, `set`, `dict`, `tuple`
-* types (`isinstance(object, type)`)
+* types: `isinstance(object, type)`
 * All classes deriving from `JSONObject`
 
-## JSONObjectDecoder
+Those objects can of course also be nested!
+
+## `JSONObjectDecoder`
 
 Decodes JSON strings converted using the `JSONObjectEncoder` back to Python objects.
+
+The class adds a custom keyword argument to the `load[s]` method: `substitute_modules`. This parameter takes a `dict`
+in the form `{"old.module.MyClass": "new.module.MyClass"}`. It can be used if you have serialized `JSONObject`s
+who's module path has changed.
 
 
 # Usage
 
-Using JSON conversion is easy. You can find code examples in the `test` folder.
+Using `jsonconversion` is easy. You can find code examples in the `test` folder.
 
 ## Encoding and Decoding
 
@@ -74,15 +89,16 @@ class MyClass(JSONObject):
 
 ## General notes
 
-JSON conversion stores the class path in the JSON string on serialization of JSONObjects. When decoding the
-object back, it autimatically imports the correct module.
+`jsonconversion` stores the class path in the JSON string when serializing a JSONObject. When decoding the
+object back, it automatically imports the correct module. You only have to ensure, the module is within your
+`PYTHONPATH`.
 
-The `to_dict` and `from_dict` methods only need to specify the elements of the classes, needed to reacreate the
-object. Parameters of a class, that are derived from other (like `age` from `year_born`) do not need to be
+The `to_dict` and `from_dict` methods only need to specify the elements of the classes, needed to recreate the
+object. Attributes of a class, that are derived from other (like `age` from `year_born`) do not need to be
 serialized.
 
 If you compare the original object with the object obtained from serialization and deserialization using `is`,
 they will differ, as these are objects at different locations in memory. Also a comparison of JSONObject with
-`==` will fail, if you do not tell Python how to compare two objects. This is why `MyClass` overrides th
+`==` will fail, if you do not tell Python how to compare two objects. This is why `MyClass` overrides the
 `__eq__` method.
 
