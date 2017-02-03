@@ -28,7 +28,6 @@ class PyTest(TestCommand):
         sys.exit(error_number)
 
 
-
 setup(
     name='jsonconversion',
     version='0.1.12',
@@ -44,10 +43,7 @@ setup(
     packages=find_packages('src'),  # include all packages under src
     package_dir={'': 'src'},   # tell distutils packages are under src
 
-    # Project uses reStructuredText, so ensure that the docutils get
-    # installed or upgraded on the target machine
-    # install_requires=['json'],
-
+    install_requires=[],
     tests_require=['pytest', 'numpy'],
 
     cmdclass={'test': PyTest},
