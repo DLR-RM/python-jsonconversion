@@ -1,11 +1,13 @@
 import json
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    np = False
 
-from json.decoder import JSONDecoder
 from jsonconversion.conversion import string2type, get_class_from_qualified_name
 
 
-class JSONObjectDecoder(JSONDecoder):
+class JSONObjectDecoder(json.decoder.JSONDecoder):
     """Custom JSON decoder class especially for state machines
 
     This JSON decoder class inherits from the basic JSON decoder class. It can decode all classes deriving from
@@ -39,7 +41,7 @@ class JSONObjectDecoder(JSONDecoder):
             if cls is set:
                 return set(dictionary['items'])
             # Maintain NumPy ndarrays
-            if cls is np.ndarray:
+            if np and cls is np.ndarray:
                 return np.array(dictionary['items'])
 
             # Recursively decode JSONObject
