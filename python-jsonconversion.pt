@@ -3,6 +3,7 @@ NAME                = python-jsonconversion
 MAINTAINER          = Franz Steinmetz <franz.steinmetz@dlr.de>
 DESCRIPTION         = Convert arbitrary Python objects into JSON strings and back
 DOCUMENTATION       = https://rmc-github.robotic.dlr.de/common/python-jsonconversion
+VERSION             = 0.1.12
 
 SUPPORTED_LANGUAGES = python
 DEPENDS             =
