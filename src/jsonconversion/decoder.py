@@ -44,8 +44,17 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
             if np and cls is np.ndarray:
                 return np.array(dictionary['items'])
 
-            # from_dict must be implemented by classes deriving from JSONObject
-            return cls.from_dict(dictionary)
+            # Probably a JSONObject, as it must implement the from_dict method
+            if hasattr(cls, "from_dict"):
+                return cls.from_dict(dictionary)
+
+            # If an additional converter function was passed to the constructor, it will hopefully take care of this
+            # special __jsonqualname__
+            if self.additional_hook:
+                return self.additional_hook(dictionary)
+
+            # That is all we can do now
+            return dictionary
 
         # Handle type objects
         elif '__type__' in dictionary:
@@ -63,7 +72,7 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
                 temp_dictionary[key] = value
             dictionary = temp_dictionary
 
-        # If an additional converter function was passes to the constructor, call it now
+        # If an additional converter function was passed to the constructor, call it now
         if self.additional_hook:
             return self.additional_hook(dictionary)
 
