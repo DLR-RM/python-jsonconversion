@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='jsonconversion',
-    version='0.1.12',
+    version='0.2.0',
     url='https://rmc-github.robotic.dlr.de/common/python-jsonconversion',
     license='BSD',
     author='Franz Steinmetz',
