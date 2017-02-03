@@ -19,5 +19,7 @@ setup(
     python_requires='<=2.7',
     setup_requires=['pytest-runner'],
     install_requires=[],
-    tests_require=['pytest', 'numpy']
+    tests_require=['pytest', 'numpy'],
+
+    zip_safe=True
 )
