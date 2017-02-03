@@ -5,9 +5,73 @@ try:
 except ImportError:
     np = False
 
-from json.encoder import JSONEncoder
+from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
+    encode_basestring
 from jsonconversion.jsonobject import JSONObject
 from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
+
+
+class JSONExtendedEncoder(JSONEncoder):
+
+    def isinstance(self, obj, cls):
+        """Custom isinstance method
+
+        Override this method if you want to custom treatment for classes inheriting from builtins such as `dict` or
+        `list`. Returning `False` for these classes, causes the `default` method to be called for the object. See
+        `JSONObjectEncoder` for an example on how to make use of this.
+
+        :param obj: Object to be encoded
+        :param cls: Class which is checked for
+        :return: `True` if `obj` is an instance of `cls`, `False` else
+        :rtype: False
+        """
+        return isinstance(obj, cls)
+
+    def iterencode(self, o, _one_shot=False):
+        """This is almost a copy of the base class implementation of this method
+
+        The changes are inspired by http://stackoverflow.com/a/17684652
+        The execution might be slower than that of the base class, as the `c_make_encoder` is never called. However,
+        the changes allow the implementation of a custom `isinstance` method.
+        """
+        if self.check_circular:
+            markers = {}
+        else:
+            markers = None
+        if self.ensure_ascii:
+            _encoder = encode_basestring_ascii
+        else:
+            _encoder = encode_basestring
+        if self.encoding != 'utf-8':
+            def _encoder(o, _orig_encoder=_encoder, _encoding=self.encoding):
+                if isinstance(o, str):
+                    o = o.decode(_encoding)
+                return _orig_encoder(o)
+
+        def floatstr(o, allow_nan=self.allow_nan, _repr=FLOAT_REPR, _inf=INFINITY, _neginf=-INFINITY):
+            # Check for specials.  Note that this type of test is processor
+            # and/or platform-specific, so do tests which don't depend on the
+            # internals.
+
+            if o != o:
+                text = 'NaN'
+            elif o == _inf:
+                text = 'Infinity'
+            elif o == _neginf:
+                text = '-Infinity'
+            else:
+                return _repr(o)
+
+            if not allow_nan:
+                raise ValueError("Out of range float values are not JSON compliant: " + repr(o))
+
+            return text
+
+        _iterencode = _make_iterencode(
+            markers, self.default, _encoder, self.indent, floatstr,
+            self.key_separator, self.item_separator, self.sort_keys,
+            self.skipkeys, _one_shot, isinstance=self.isinstance)
+        return _iterencode(o, 0)
 
 
 class JSONObjectEncoder(JSONEncoder):
