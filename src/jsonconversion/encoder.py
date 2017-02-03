@@ -1,3 +1,5 @@
+from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
+    encode_basestring
 from inspect import isclass
 from types import ClassType
 try:
@@ -5,8 +7,6 @@ try:
 except ImportError:
     np = False
 
-from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
-    encode_basestring
 from jsonconversion.jsonobject import JSONObject
 from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
 
@@ -74,7 +74,7 @@ class JSONExtendedEncoder(JSONEncoder):
         return _iterencode(o, 0)
 
 
-class JSONObjectEncoder(JSONEncoder):
+class JSONObjectEncoder(JSONExtendedEncoder):
     """Custom JSON encoder class especially for state machines
 
     This JSON encoder class inherits from the basic JSON encoder class. It can encode all classes deriving from
@@ -82,8 +82,7 @@ class JSONObjectEncoder(JSONEncoder):
     int, object, float) are handled. Finally, it is tried to convert dictionary keys to integers.
     """
 
-    def __init__(self, nested_jsonobjects=True, **kwargs):
-        self.nested_jsonobjects = nested_jsonobjects
+    def __init__(self, **kwargs):
         for key in ['use_decimal', 'namedtuple_as_object', 'tuple_as_array', 'bigint_as_string', 'item_sort_key',
                     'for_json', 'ignore_nan']:
             try:
@@ -91,6 +90,11 @@ class JSONObjectEncoder(JSONEncoder):
             except KeyError:
                 pass
         super(JSONObjectEncoder, self).__init__(**kwargs)
+        
+    def isinstance(self, obj, cls):
+        if isinstance(obj, (set, tuple)):
+            return False
+        return super(JSONObjectEncoder, self).isinstance(obj, cls)
 
     def default(self, obj):
         """This method is called after all base class encoding logic
@@ -105,10 +109,6 @@ class JSONObjectEncoder(JSONEncoder):
         if isinstance(obj, JSONObject):
             # to_dict must be implemented by classes deriving from JSONObject
             dictionary = obj.to_dict()
-            if self.nested_jsonobjects:
-                for key, value in dictionary.iteritems():
-                    dictionary[key] = self.encode(value)
-            # e.g. rafcon.statemachine.states.execution_state.ExecutionState
             dictionary['__jsonqualname__'] = get_qualified_name_for_class_object(obj)
             return dictionary
 
@@ -117,42 +117,18 @@ class JSONObjectEncoder(JSONEncoder):
                 return {'__type__': get_qualified_name_for_class(obj)}
             return {'__type__': obj.__name__}
 
+        if isinstance(obj, set):
+            dictionary = {'__jsonqualname__': '__builtin__.set',
+                          'items': list(obj)}
+            return dictionary
+
+        if isinstance(obj, tuple):
+            dictionary = {'__jsonqualname__': '__builtin__.tuple',
+                          'items': list(obj)}
+            return dictionary
+
         elif np and isinstance(obj, np.ndarray):
             return {'__jsonqualname__': "numpy.ndarray", "items": obj.tolist()}
 
         else:
             return super(JSONObjectEncoder, self).default(obj)
-
-    def encode(self, obj):
-        """This method is called before any object conversion of the inherited class
-
-        The method checks for (nested) tuples and Vividicts and converts them appropriately.
-
-        :param obj: The object to be encoded
-        :return: Encoded object
-        :rtype: dict
-        """
-        # Recursive check for sequence types
-        def check_for_sequences(item):
-            if isinstance(item, set):
-                dictionary = {'__jsonqualname__': '__builtin__.set',
-                              'items': [check_for_sequences(val) for val in item]}
-                return dictionary
-
-            if isinstance(item, tuple):
-                dictionary = {'__jsonqualname__': '__builtin__.tuple',
-                              'items': [check_for_sequences(val) for val in item]}
-                return dictionary
-
-            elif isinstance(item, dict):
-                dictionary = {}
-                for key, value in item.iteritems():
-                    dictionary[key] = check_for_sequences(value)
-                return dictionary
-
-            elif isinstance(item, list):
-                return [check_for_sequences(e) for e in item]
-
-            return item
-
-        return super(JSONObjectEncoder, self).encode(check_for_sequences(obj))
