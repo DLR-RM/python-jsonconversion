@@ -1,3 +1,5 @@
+# Copyright
+
 from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
     encode_basestring
 from inspect import isclass

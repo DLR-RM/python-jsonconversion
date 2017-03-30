@@ -1,3 +1,5 @@
+# Copyright
+
 import numpy as np
 
 from testing_utils import convert_with_assertion

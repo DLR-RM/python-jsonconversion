@@ -1,3 +1,5 @@
+# Copyright
+
 from jsonconversion.jsonobject import JSONObject
 from testing_utils import convert_with_assertion
 

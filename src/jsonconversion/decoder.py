@@ -1,3 +1,5 @@
+# Copyright
+
 import json
 try:
     import numpy as np

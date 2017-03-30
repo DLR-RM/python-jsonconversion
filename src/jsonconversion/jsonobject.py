@@ -1,3 +1,5 @@
+# Copyright
+
 class JSONObject(object):
     """Interface class
 

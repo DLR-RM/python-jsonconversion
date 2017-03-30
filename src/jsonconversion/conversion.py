@@ -1,3 +1,5 @@
+# Copyright
+
 import __builtin__
 from pydoc import locate, ErrorDuringImport
 from inspect import isclass
