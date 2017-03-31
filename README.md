@@ -3,12 +3,13 @@
 # `jsonconversion`
 
 This python module helps converting arbitrary Python objects into JSON strings and back. It extends the basic
-features of the native `JSONEncoder` and `JSONDecoder`. For this purpose, four classes are provided:
+features of the `JSONEncoder` and `JSONDecoder` classes provided by the native `json` package. For this purpose,
+`jsonconversion` ships with these four classes:
 
 ## `JSONObject`
 
 Your serializable classes should inherit from this class. Hereby, they must implement the methods `from_dict` and
-`to_dict`.
+`to_dict`. The example further down describes how to do so.
 
 ## `JSONExtendedEncoder`
 
@@ -16,15 +17,17 @@ This is a class used internally by `JSONObjectEncoder`. However, it can also be 
 features of `JSONObjectEncoder` but want to implement your own encoders.
 
 The class is especially helpful, if you want custom handling of builtins (`int`, `dict`, ...) or classes deriving
-from builtins. This would not be possible if directly inheriting from `JSONEncoder`. In order to do so, override the
+from builtins. This would not be possible if directly inheriting from `JSONEncoder`. To do so, override the
 `isinstance` method and return `False` for all types you want to handle in the `default` method.
+
+If you look at the source code of `JSONObjectEncoder`, you will see how this can be used.
 
 ## `JSONObjectEncoder`
 
 Encodes Python objects into JSON strings. Supported objects are:
 
 * Python builtins: `int`, `float`, `str`, `list`, `set`, `dict`, `tuple`
-* types: `isinstance(object, type)`
+* `type` objects: `isinstance(object, type)`
 * All classes deriving from `JSONObject`
 
 Those objects can of course also be nested!
@@ -40,7 +43,7 @@ who's module path has changed.
 
 # Usage
 
-Using `jsonconversion` is easy. You can find code examples in the `test` folder.
+Using `jsonconversion` is easy. You can find further code examples in the `test` folder.
 
 ## Encoding and Decoding
 
@@ -77,8 +80,8 @@ class MyClass(JSONObject):
         self.c = c
 
     @classmethod
-    def from_dict(cls, _dict):
-        return cls(_dict['a'], _dict['b'], _dict['c'])
+    def from_dict(cls, dict_):
+        return cls(dict_['a'], dict_['b'], dict_['c'])
 
     def to_dict(self):
         return {'a': self.a, 'b': self.b, 'c': self.c}
@@ -89,15 +92,14 @@ class MyClass(JSONObject):
 
 ## General notes
 
-`jsonconversion` stores the class path in the JSON string when serializing a JSONObject. When decoding the
-object back, it automatically imports the correct module. You only have to ensure, the module is within your
+* `jsonconversion` stores the class path in the JSON string when serializing a JSONObject. When decoding the object
+back, it automatically imports the correct module. You only have to ensure that the module is within your
 `PYTHONPATH`.
 
-The `to_dict` and `from_dict` methods only need to specify the elements of the classes, needed to recreate the
-object. Attributes of a class, that are derived from other (like `age` from `year_born`) do not need to be
-serialized.
+* The `to_dict` and `from_dict` methods only need to specify the elements of a class, needed to recreate the object.
+Derived attributes of a class (like `age` from `year_born`) do not need to be serialized.
 
-If you compare the original object with the object obtained from serialization and deserialization using `is`,
+* If you compare the original object with the object obtained from serialization and deserialization using `is`,
 they will differ, as these are objects at different locations in memory. Also a comparison of JSONObject with
 `==` will fail, if you do not tell Python how to compare two objects. This is why `MyClass` overrides the
 `__eq__` method.
