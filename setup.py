@@ -1,6 +1,12 @@
 # Copyright
 
 from setuptools import setup, find_packages
+from os import path
+
+# Get the long description from README.rst
+here = path.abspath(path.dirname(__file__))
+with open(path.join(here, 'README.rst')) as f:
+    long_description = f.read()
 
 
 setup(
@@ -14,6 +20,7 @@ setup(
     author_email='franz.steinmetz@dlr.de',
     maintainer_email='franz.steinmetz@dlr.de',
     description='This python module helps converting arbitrary Python objects into JSON strings and back.',
+    long_description=long_description,
     keywords=('json', 'conversion', 'serialization'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -32,8 +39,8 @@ setup(
         'Topic :: Utilities'
     ],
 
-    packages=find_packages('src'),  # include all packages under src
-    package_dir={'': 'src'},   # tell distutils packages are under src
+    packages=['jsonconversion'],
+    package_dir={'': 'src'}, # tell distutils packages are under src
 
     python_requires='<=2.7',
     setup_requires=['pytest-runner'],
