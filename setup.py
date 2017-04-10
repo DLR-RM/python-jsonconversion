@@ -19,7 +19,7 @@ with open(path.join(here, 'README.rst')) as f:
 
 setup(
     name='jsonconversion',
-    version='0.2.2',
+    version='0.2.3',
     url='https://github.com/DLR-RM/python-jsonconversion',
     download_url='https://github.com/DLR-RM/python-jsonconversion/archive/0.2.2.tar.gz',
     license='BSD',
