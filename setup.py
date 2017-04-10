@@ -19,7 +19,7 @@ with open(path.join(here, 'README.rst')) as f:
 
 setup(
     name='jsonconversion',
-    version='0.2.3',
+    version='0.2.4',
     url='https://github.com/DLR-RM/python-jsonconversion',
     download_url='https://github.com/DLR-RM/python-jsonconversion/archive/0.2.2.tar.gz',
     license='BSD',
@@ -50,7 +50,7 @@ setup(
     packages=['jsonconversion'],
     package_dir={'': 'src'},  # tell distutils packages are under src
 
-    python_requires='==2.6.*,==2.7.*',
+    python_requires='>=2.6, !=3.*',
     setup_requires=['pytest-runner'],
     install_requires=[],
     tests_require=['pytest', 'numpy'],
