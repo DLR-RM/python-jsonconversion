@@ -10,7 +10,7 @@
 
 from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
     encode_basestring
-from inspect import isclass
+from inspect import isclass, getargspec
 from types import ClassType
 try:
     import numpy as np
@@ -93,13 +93,14 @@ class JSONObjectEncoder(JSONExtendedEncoder):
     """
 
     def __init__(self, **kwargs):
-        for key in ['use_decimal', 'namedtuple_as_object', 'tuple_as_array', 'bigint_as_string', 'item_sort_key',
-                    'for_json', 'ignore_nan']:
-            try:
+        # Depending on the version of json, the allowed arguments differ.
+        # Therefore we have to remove unsupported arguments.
+        parental_constructor = super(JSONObjectEncoder, self).__init__
+        parental_constructor_args = getargspec(parental_constructor).args
+        for key in kwargs.keys():
+            if key not in parental_constructor_args:
                 del kwargs[key]
-            except KeyError:
-                pass
-        super(JSONObjectEncoder, self).__init__(**kwargs)
+        parental_constructor(**kwargs)
         
     def isinstance(self, obj, cls):
         if isinstance(obj, (set, tuple)):
