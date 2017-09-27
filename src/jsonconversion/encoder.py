@@ -1,4 +1,4 @@
-from inspect import isclass
+from inspect import isclass, getargspec
 from types import ClassType
 try:
     import numpy as np
@@ -20,12 +20,14 @@ class JSONObjectEncoder(JSONEncoder):
 
     def __init__(self, nested_jsonobjects=True, **kwargs):
         self.nested_jsonobjects = nested_jsonobjects
-        for key in ['use_decimal', 'namedtuple_as_object', 'tuple_as_array', 'bigint_as_string', 'item_sort_key',
-                    'for_json', 'ignore_nan']:
-            try:
+        # Depending on the version of json, the allowed arguments differ.
+        # Therefore we have to remove unsupported arguments.
+        parental_constructor = super(JSONObjectEncoder, self).__init__
+        parental_constructor_args = getargspec(parental_constructor).args
+        for key in kwargs.keys():
+            if key not in parental_constructor_args:
                 del kwargs[key]
-            except KeyError:
-                pass
+        parental_constructor(**kwargs)
         super(JSONObjectEncoder, self).__init__(**kwargs)
 
     def default(self, obj):
