@@ -19,9 +19,9 @@ with open(path.join(here, 'README.rst')) as f:
 
 setup(
     name='jsonconversion',
-    version='0.2.4',
+    version='0.2.6',
     url='https://github.com/DLR-RM/python-jsonconversion',
-    download_url='https://github.com/DLR-RM/python-jsonconversion/archive/0.2.2.tar.gz',
+    download_url='https://github.com/DLR-RM/python-jsonconversion/tarball/master',
     license='BSD',
     author='Franz Steinmetz',
     maintainer='Franz Steinmetz',
