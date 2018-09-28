@@ -19,9 +19,9 @@ with open(path.join(here, 'README.rst')) as f:
 
 setup(
     name='jsonconversion',
-    version='0.2.4',
+    version='0.2.6',
     url='https://github.com/DLR-RM/python-jsonconversion',
-    download_url='https://github.com/DLR-RM/python-jsonconversion/archive/0.2.2.tar.gz',
+    download_url='https://github.com/DLR-RM/python-jsonconversion/tarball/master',
     license='BSD',
     author='Franz Steinmetz',
     maintainer='Franz Steinmetz',
@@ -40,6 +40,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -50,7 +51,7 @@ setup(
     packages=['jsonconversion'],
     package_dir={'': 'src'},  # tell distutils packages are under src
 
-    python_requires='>=2.6, !=3.*',
+    python_requires='>=2.6',
     setup_requires=['pytest-runner'],
     install_requires=[],
     tests_require=['pytest', 'numpy'],

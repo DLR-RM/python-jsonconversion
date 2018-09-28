@@ -8,6 +8,8 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
+from __future__ import print_function
+
 import json
 import numpy as np
 
@@ -18,9 +20,9 @@ from jsonconversion.encoder import JSONObjectEncoder
 def convert(var):
 
     str_var = json.dumps(var, cls=JSONObjectEncoder)
-    print "\nConversion:", var, "=>", str_var,
+    print("\nConversion:", var, "=>", str_var, end=' ')
     var_2 = json.loads(str_var, cls=JSONObjectDecoder)
-    print "=>", var_2
+    print("=>", var_2)
     return str_var, var_2
 
 

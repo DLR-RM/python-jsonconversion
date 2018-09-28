@@ -56,7 +56,7 @@ def test_dicts():
 
 
 def test_nested():
-    n1 = [1, 2, {3: 'a'}, (4, 5, set([6, 7]))]
+    n1 = [1, 2, {3: 'a'}, (4, 5, set([6, 7])), None]
     n2 = {0: [1, 2], 1: (3, 4), 'abc': [{'x': 1, 'y': 2}]}
 
     convert_with_assertion(n1)

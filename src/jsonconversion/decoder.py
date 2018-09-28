@@ -9,6 +9,7 @@
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
 import json
+import inspect
 try:
     import numpy as np
 except ImportError:
@@ -33,7 +34,11 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
             self.substitute_modules = kwargs['substitute_modules']
             del kwargs['substitute_modules']
         self.additional_hook = object_hook
-        super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
+        argspecs = inspect.getargspec(super(JSONObjectDecoder, self).__init__)
+        if 'encoding' in argspecs.args:
+            super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
+        else:
+            super(JSONObjectDecoder, self).__init__(object_hook=self._dict_to_qualified_object, **kwargs)
 
     def _dict_to_qualified_object(self, dictionary):
         # Handle classes deriving from JSONObject and tuples
@@ -74,7 +79,7 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
         elif isinstance(dictionary, dict):
             # Converts keys to integers, where possible
             temp_dictionary = {}
-            for key, value in dictionary.iteritems():
+            for key, value in dictionary.items():
                 try:
                     key = int(key)
                 except ValueError:

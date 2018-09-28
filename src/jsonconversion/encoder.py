@@ -8,10 +8,16 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
+import sys
 from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
     encode_basestring
 from inspect import isclass, getargspec
-from types import ClassType
+if sys.version_info >= (3,):
+    ClassType = type
+    builtins_str = "builtins"
+else:
+    from types import ClassType
+    builtins_str = "__builtin__"
 try:
     import numpy as np
 except ImportError:
@@ -52,7 +58,7 @@ class JSONExtendedEncoder(JSONEncoder):
             _encoder = encode_basestring_ascii
         else:
             _encoder = encode_basestring
-        if self.encoding != 'utf-8':
+        if getattr(self, 'enocing', 'utf-8') != 'utf-8':
             def _encoder(o, _orig_encoder=_encoder, _encoding=self.encoding):
                 if isinstance(o, str):
                     o = o.decode(_encoding)
@@ -129,12 +135,12 @@ class JSONObjectEncoder(JSONExtendedEncoder):
             return {'__type__': obj.__name__}
 
         if isinstance(obj, set):
-            dictionary = {'__jsonqualname__': '__builtin__.set',
+            dictionary = {'__jsonqualname__': builtins_str + '.set',
                           'items': list(obj)}
             return dictionary
 
         if isinstance(obj, tuple):
-            dictionary = {'__jsonqualname__': '__builtin__.tuple',
+            dictionary = {'__jsonqualname__': builtins_str + '.tuple',
                           'items': list(obj)}
             return dictionary
 
