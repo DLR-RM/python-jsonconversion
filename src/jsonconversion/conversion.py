@@ -8,9 +8,15 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
-import __builtin__
+import sys
 from pydoc import locate, ErrorDuringImport
 from inspect import isclass
+
+if sys.version_info >= (3,):
+    import builtins
+    basestring = str
+else:
+    import __builtin__ as builtins
 
 
 def string2type(string_value):
@@ -24,13 +30,13 @@ def string2type(string_value):
         return string_value
 
     # Special case, which cannot be handled otherwise
-    if string_value == "NoneType" or string_value == "__builtin__.NoneType":
+    if string_value.endswith('NoneType'):
         return type(None)
 
     # Get object associated with string
     # First check whether we are having a built in type (int, str, etc)
-    if hasattr(__builtin__, string_value):
-        obj = getattr(__builtin__, string_value)
+    if hasattr(builtins, string_value):
+        obj = getattr(builtins, string_value)
         if type(obj) is type:
             return obj
 
@@ -67,7 +73,10 @@ def get_class_from_qualified_name(qualified_name):
     parts = qualified_name.split('.')
     module_name = ".".join(parts[:-1])
     # First ensure, that the module is imported
-    cls = __import__(module_name)
+    if module_name in ['builtin', '__builtin__']:
+        cls = builtins
+    else:
+        cls = __import__(module_name)
     # Find nested class
     for comp in parts[1:]:
         cls = getattr(cls, comp)
