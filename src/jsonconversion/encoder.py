@@ -9,8 +9,14 @@
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
 import sys
-from json.encoder import JSONEncoder, _make_iterencode, encode_basestring_ascii, FLOAT_REPR, INFINITY, \
-    encode_basestring
+from json.encoder import JSONEncoder, _make_iterencode, encode_basestring, encode_basestring_ascii, INFINITY
+try:
+    # Python < 3.6 json
+    from json.encoder import FLOAT_REPR
+except ImportError:
+    # Python >= 3.6 json
+    FLOAT_REPR = float.__repr__
+
 from inspect import isclass, getargspec
 if sys.version_info >= (3,):
     ClassType = type
