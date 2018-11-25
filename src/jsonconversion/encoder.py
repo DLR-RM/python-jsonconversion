@@ -9,6 +9,7 @@
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
 import sys
+import inspect
 from json.encoder import JSONEncoder, _make_iterencode, encode_basestring, encode_basestring_ascii, INFINITY
 try:
     # Python < 3.6 json
@@ -17,7 +18,9 @@ except ImportError:
     # Python >= 3.6 json
     FLOAT_REPR = float.__repr__
 
-from inspect import isclass, getargspec
+# necessary for knowing the python version
+import jsonconversion
+
 if sys.version_info >= (3,):
     ClassType = type
     builtins_str = "builtins"
@@ -108,8 +111,11 @@ class JSONObjectEncoder(JSONExtendedEncoder):
         # Depending on the version of json, the allowed arguments differ.
         # Therefore we have to remove unsupported arguments.
         parental_constructor = super(JSONObjectEncoder, self).__init__
-        parental_constructor_args = getargspec(parental_constructor).args
-        for key in kwargs.keys():
+        if jsonconversion.python_3_6:
+            parental_constructor_args = inspect.getfullargspec(parental_constructor).args
+        else:
+            parental_constructor_args = inspect.getargspec(parental_constructor).args
+        for key in list(kwargs.keys()):
             if key not in parental_constructor_args:
                 del kwargs[key]
         parental_constructor(**kwargs)
