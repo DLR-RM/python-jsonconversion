@@ -9,7 +9,7 @@
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
 import sys
-import inspect
+from inspect import isclass
 from json.encoder import JSONEncoder, _make_iterencode, encode_basestring, encode_basestring_ascii, INFINITY
 try:
     # Python < 3.6 json
@@ -17,9 +17,6 @@ try:
 except ImportError:
     # Python >= 3.6 json
     FLOAT_REPR = float.__repr__
-
-# necessary for knowing the python version
-import jsonconversion
 
 if sys.version_info >= (3,):
     ClassType = type
@@ -32,6 +29,7 @@ try:
 except ImportError:
     np = False
 
+from jsonconversion import getfullargspec
 from jsonconversion.jsonobject import JSONObject
 from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
 
@@ -111,10 +109,7 @@ class JSONObjectEncoder(JSONExtendedEncoder):
         # Depending on the version of json, the allowed arguments differ.
         # Therefore we have to remove unsupported arguments.
         parental_constructor = super(JSONObjectEncoder, self).__init__
-        if jsonconversion.python_3_6:
-            parental_constructor_args = inspect.getfullargspec(parental_constructor).args
-        else:
-            parental_constructor_args = inspect.getargspec(parental_constructor).args
+        parental_constructor_args = getfullargspec(parental_constructor).args
         for key in list(kwargs.keys()):
             if key not in parental_constructor_args:
                 del kwargs[key]
