@@ -15,3 +15,11 @@ try:
 except DistributionNotFound:
     __version__ = "unknown"
 
+try:
+    # Python >= 3.6
+    from inspect import getfullargspec
+except ImportError:
+    # Python < 3.6
+    from inspect import getargspec as getfullargspec
+
+
