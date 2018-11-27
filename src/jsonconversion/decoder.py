@@ -9,12 +9,12 @@
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
 import json
-import inspect
 try:
     import numpy as np
 except ImportError:
     np = False
 
+from jsonconversion import getfullargspec
 from jsonconversion.conversion import string2type, get_class_from_qualified_name
 
 
@@ -34,7 +34,7 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
             self.substitute_modules = kwargs['substitute_modules']
             del kwargs['substitute_modules']
         self.additional_hook = object_hook
-        argspecs = inspect.getargspec(super(JSONObjectDecoder, self).__init__)
+        argspecs = getfullargspec(super(JSONObjectDecoder, self).__init__)
         if 'encoding' in argspecs.args:
             super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
         else:
