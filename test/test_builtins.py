@@ -8,6 +8,10 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
+import json
+
+from jsonconversion.decoder import JSONObjectDecoder
+
 from testing_utils import convert_with_assertion
 
 
@@ -17,6 +21,15 @@ def test_numbers():
 
     convert_with_assertion(i)
     convert_with_assertion(f)
+
+
+def test_objects():
+    o = object
+
+    convert_with_assertion(o)
+
+    assert object is json.loads('{"__type__": "__builtin__.object"}', cls=JSONObjectDecoder)
+    assert object is json.loads('{"__type__": "builtins.object"}', cls=JSONObjectDecoder)
 
 
 def test_strings():
