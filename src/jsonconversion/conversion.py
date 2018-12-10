@@ -73,7 +73,7 @@ def get_class_from_qualified_name(qualified_name):
     parts = qualified_name.split('.')
     module_name = ".".join(parts[:-1])
     # First ensure, that the module is imported
-    if module_name in ['builtin', '__builtin__']:
+    if module_name in ['builtins', '__builtin__']:
         cls = builtins
     else:
         cls = __import__(module_name)
