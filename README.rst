@@ -42,7 +42,7 @@ Decodes JSON strings converted using the ``JSONObjectEncoder`` back to Python ob
 
 The class adds a custom keyword argument to the ``load[s]`` method: ``substitute_modules``. This parameter takes a
 ``dict`` in the form ``{"old.module.MyClass": "new.module.MyClass"}``. It can be used if you have serialized
-``JSONObject``s who's module path has changed.
+``JSONObject``\s who's module path has changed.
 
 Usage
 =====
