@@ -14,7 +14,7 @@ try:
 except ImportError:
     np = False
 
-from jsonconversion import getfullargspec
+from jsonconversion import get_all_args
 from jsonconversion.conversion import string2type, get_class_from_qualified_name
 
 
@@ -34,8 +34,9 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
             self.substitute_modules = kwargs['substitute_modules']
             del kwargs['substitute_modules']
         self.additional_hook = object_hook
-        argspecs = getfullargspec(super(JSONObjectDecoder, self).__init__)
-        if 'encoding' in argspecs.args:
+        parental_constructor = super(JSONObjectDecoder, self).__init__
+        parental_constructor_args = get_all_args(parental_constructor)
+        if 'encoding' in parental_constructor_args:
             super(JSONObjectDecoder, self).__init__(encoding=encoding, object_hook=self._dict_to_qualified_object, **kwargs)
         else:
             super(JSONObjectDecoder, self).__init__(object_hook=self._dict_to_qualified_object, **kwargs)
