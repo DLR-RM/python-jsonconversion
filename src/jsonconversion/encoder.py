@@ -29,7 +29,7 @@ try:
 except ImportError:
     np = False
 
-from jsonconversion import getfullargspec
+from jsonconversion import get_all_args
 from jsonconversion.jsonobject import JSONObject
 from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
 
@@ -109,7 +109,7 @@ class JSONObjectEncoder(JSONExtendedEncoder):
         # Depending on the version of json, the allowed arguments differ.
         # Therefore we have to remove unsupported arguments.
         parental_constructor = super(JSONObjectEncoder, self).__init__
-        parental_constructor_args = getfullargspec(parental_constructor).args
+        parental_constructor_args = get_all_args(parental_constructor)
         for key in list(kwargs.keys()):
             if key not in parental_constructor_args:
                 del kwargs[key]

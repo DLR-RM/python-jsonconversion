@@ -23,3 +23,17 @@ except ImportError:
     from inspect import getargspec as getfullargspec
 
 
+def get_all_args(func):
+    """Determines the names of all arguments of the given function
+
+    :param func: The function/method to be inspected
+    :return: Argument names
+    :rtype: set(str)
+    """
+    fullargspec = getfullargspec(func)
+    func_args = set()
+    for arg_type in ["args", "varargs", "varkw", "kwonlyargs", "keywords"]:
+        arg_type_val = getattr(fullargspec, arg_type, None)
+        if arg_type_val is not None:
+            func_args |= set(arg_type_val)
+    return func_args
