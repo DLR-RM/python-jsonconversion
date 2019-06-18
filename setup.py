@@ -16,6 +16,7 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst')) as f:
     long_description = f.read()
 
+test_requirements = ['pytest', 'numpy']
 
 setup(
     name='jsonconversion',
@@ -54,7 +55,11 @@ setup(
     python_requires='>=2.6',
     setup_requires=['pytest-runner'],
     install_requires=[],
-    tests_require=['pytest', 'numpy'],
+    tests_require=test_requirements,
+
+    extras_require={
+        'testing': test_requirements
+    },
 
     zip_safe=True
 )
