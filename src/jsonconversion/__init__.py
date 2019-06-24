@@ -35,6 +35,7 @@ else:
     import __builtin__ as builtins
     from types import ClassType
     builtins_str = PY2_BUILTINS_STR
+    basestring = basestring
 
 
 def get_all_args(func):
