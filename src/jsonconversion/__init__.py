@@ -8,6 +8,7 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
+import sys
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
@@ -21,6 +22,20 @@ try:
 except ImportError:
     # Python < 3.6
     from inspect import getargspec as getfullargspec
+
+
+PY2_BUILTINS_STR = "__builtin__"
+PY3_BUILTINS_STR = "builtins"
+if sys.version_info >= (3,):
+    import builtins
+    basestring = str
+    ClassType = type
+    builtins_str = PY3_BUILTINS_STR
+else:
+    import __builtin__ as builtins
+    from types import ClassType
+    builtins_str = PY2_BUILTINS_STR
+    basestring = basestring
 
 
 def get_all_args(func):

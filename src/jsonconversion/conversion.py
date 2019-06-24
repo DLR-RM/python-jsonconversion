@@ -12,11 +12,7 @@ import sys
 from pydoc import locate, ErrorDuringImport
 from inspect import isclass
 
-if sys.version_info >= (3,):
-    import builtins
-    basestring = str
-else:
-    import __builtin__ as builtins
+from jsonconversion import basestring, builtins, PY2_BUILTINS_STR, PY3_BUILTINS_STR
 
 
 def string2type(string_value):
@@ -61,12 +57,20 @@ def string2type(string_value):
     raise ValueError("Unknown type '{0}'".format(string_value))
 
 
-def get_qualified_name_for_class(obj):
-    return obj.__module__ + '.' + obj.__name__
+def get_qualified_name_for_class(obj, builtins_str=None):
+    global PY2_BUILTINS_STR, PY3_BUILTINS_STR
+    module = obj.__module__
+    if module in (PY2_BUILTINS_STR, PY3_BUILTINS_STR):
+        module = builtins_str
+    return module + '.' + obj.__name__
 
 
-def get_qualified_name_for_class_object(obj):
-    return obj.__module__ + '.' + obj.__class__.__name__
+def get_qualified_name_for_class_object(obj, builtins_str=None):
+    global PY2_BUILTINS_STR, PY3_BUILTINS_STR
+    module = obj.__module__
+    if module in (PY2_BUILTINS_STR, PY3_BUILTINS_STR):
+        module = builtins_str
+    return module + '.' + obj.__class__.__name__
 
 
 def get_class_from_qualified_name(qualified_name):

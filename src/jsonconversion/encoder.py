@@ -17,19 +17,12 @@ try:
 except ImportError:
     # Python >= 3.6 json
     FLOAT_REPR = float.__repr__
-
-if sys.version_info >= (3,):
-    ClassType = type
-    builtins_str = "builtins"
-else:
-    from types import ClassType
-    builtins_str = "__builtin__"
 try:
     import numpy as np
 except ImportError:
     np = False
 
-from jsonconversion import get_all_args
+from jsonconversion import get_all_args, PY2_BUILTINS_STR, PY3_BUILTINS_STR, builtins_str, ClassType
 from jsonconversion.jsonobject import JSONObject
 from jsonconversion.conversion import get_qualified_name_for_class_object, get_qualified_name_for_class
 
@@ -106,6 +99,17 @@ class JSONObjectEncoder(JSONExtendedEncoder):
     """
 
     def __init__(self, **kwargs):
+        # Give user the option to override the name of the builtin module
+        # This can be useful to keep a file format identical for Python 2 and 3
+        global PY2_BUILTINS_STR, PY3_BUILTINS_STR, builtins_str
+        self.builtins_str = builtins_str
+        if 'builtins_str' in kwargs:
+            custom_builtins_str = kwargs.pop('builtins_str')
+            if custom_builtins_str in (PY2_BUILTINS_STR, PY3_BUILTINS_STR):
+                self.builtins_str = custom_builtins_str
+            elif builtins_str is not None:
+                raise ValueError("builtins_str must be either '{}' or '{}'".format(PY2_BUILTINS_STR, PY3_BUILTINS_STR))
+
         # Depending on the version of json, the allowed arguments differ.
         # Therefore we have to remove unsupported arguments.
         parental_constructor = super(JSONObjectEncoder, self).__init__
@@ -133,21 +137,21 @@ class JSONObjectEncoder(JSONExtendedEncoder):
         if isinstance(obj, JSONObject):
             # to_dict must be implemented by classes deriving from JSONObject
             dictionary = obj.to_dict()
-            dictionary['__jsonqualname__'] = get_qualified_name_for_class_object(obj)
+            dictionary['__jsonqualname__'] = get_qualified_name_for_class_object(obj, self.builtins_str)
             return dictionary
 
         elif isinstance(obj, (type, ClassType)):
             if isclass(obj):
-                return {'__type__': get_qualified_name_for_class(obj)}
+                return {'__type__': get_qualified_name_for_class(obj, self.builtins_str)}
             return {'__type__': obj.__name__}
 
         if isinstance(obj, set):
-            dictionary = {'__jsonqualname__': builtins_str + '.set',
+            dictionary = {'__jsonqualname__': self.builtins_str + '.set',
                           'items': list(obj)}
             return dictionary
 
         if isinstance(obj, tuple):
-            dictionary = {'__jsonqualname__': builtins_str + '.tuple',
+            dictionary = {'__jsonqualname__': self.builtins_str + '.tuple',
                           'items': list(obj)}
             return dictionary
 
