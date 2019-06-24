@@ -8,9 +8,12 @@
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
 
+from pytest import raises
+
 import json
 
 from jsonconversion.decoder import JSONObjectDecoder
+from jsonconversion.encoder import JSONObjectEncoder
 
 from testing_utils import convert_with_assertion
 
@@ -30,6 +33,26 @@ def test_objects():
 
     assert object is json.loads('{"__type__": "__builtin__.object"}', cls=JSONObjectDecoder)
     assert object is json.loads('{"__type__": "builtins.object"}', cls=JSONObjectDecoder)
+
+
+def test_builtin_str():
+    target_string = '{"__jsonqualname__": "__builtin__.tuple", "items": [1, 2]}'
+    dump_string = json.dumps(tuple([1, 2]), cls=JSONObjectEncoder, builtins_str="__builtin__", sort_keys=True)
+    assert target_string == dump_string
+
+    target_string = '{"__jsonqualname__": "builtins.tuple", "items": [1, 2]}'
+    dump_string = json.dumps(tuple([1, 2]), cls=JSONObjectEncoder, builtins_str="builtins", sort_keys=True)
+    assert target_string == dump_string
+    target_string = '{"__type__": "__builtin__.tuple"}'
+    dump_string = json.dumps(tuple, cls=JSONObjectEncoder, builtins_str="__builtin__", sort_keys=True)
+    assert target_string == dump_string
+
+    target_string = '{"__type__": "builtins.tuple"}'
+    dump_string = json.dumps(tuple, cls=JSONObjectEncoder, builtins_str="builtins", sort_keys=True)
+    assert target_string == dump_string
+
+    with raises(ValueError):
+        json.dumps(tuple([1, 2]), cls=JSONObjectEncoder, builtins_str="wrong", sort_keys=True)
 
 
 def test_strings():
