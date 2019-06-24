@@ -20,7 +20,7 @@ test_requirements = ['pytest', 'numpy']
 
 setup(
     name='jsonconversion',
-    version='0.2.11',
+    version='0.2.12',
     url='https://github.com/DLR-RM/python-jsonconversion',
     download_url='https://github.com/DLR-RM/python-jsonconversion/tarball/master',
     license='BSD',
