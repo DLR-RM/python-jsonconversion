@@ -1,0 +1,136 @@
+---
+- type: DLR SE QM project file
+- seqm_version: 1.1
+- project_name: python-jsonconversion
+- seqmedit_version: 1.0.1
+- howto: 'wanna create such a cool file? see https://wiki.robotic.dlr.de/Source_code_directory_structure#seqm.yaml (at RM) or https://gitlab-ee.sc.dlr.de/se-netzwerk/seqmedit (outside of RM, but inside of DLR)'
+- recommendations:
+    - eaa01:
+        - state: done
+    - eaa02:
+        - state: done
+    - eaa03:
+        - state: done
+    - eaa05:
+        - state: done
+    - eaa06:
+        - state: done
+    - eaa08:
+        - state: done
+    - eaa09:
+        - state: done
+    - eaa10:
+        - state: done
+    - eaem01:
+        - state: done
+    - eaem02:
+        - state: done
+    - eaem03:
+        - state: done
+    - eaem04:
+        - state: not done
+    - eaem05:
+        - state: done
+    - eaem06:
+        - state: done
+    - eaem07:
+        - state: done
+    - eaem08:
+        - state: done
+    - eaem09:
+        - state: not done
+    - eam01:
+        - state: done
+    - eam02:
+        - state: not done
+    - eam03:
+        - state: not done
+    - eam04:
+        - state: not done
+    - eam05:
+        - state: not done
+    - eam08:
+        - state: done
+    - eam09:
+        - state: not done
+    - edi01:
+        - state: done
+    - edi02:
+        - state: done
+    - edi03:
+        - state: done
+    - edi05:
+        - state: done
+    - edi06:
+        - state: not done
+    - edi07:
+        - state: not done
+    - edi08:
+        - state: not done
+    - edi09:
+        - state: done
+    - edi10:
+        - state: done
+    - edi11:
+        - state: not done
+    - eqa01:
+        - state: done
+    - eqa02:
+        - state: done
+    - eqa03:
+        - state: done
+    - eqa04:
+        - state: done
+    - erm01:
+        - state: done
+    - erm02:
+        - state: done
+    - erm03:
+        - state: done
+    - erm04:
+        - state: done
+    - erm06:
+        - state: done
+    - erm07:
+        - state: done
+    - erm08:
+        - state: not done
+    - erm09:
+        - state: done
+    - erm10:
+        - state: done
+    - erm11:
+        - state: done
+    - esa01:
+        - state: not done
+    - esa02:
+        - state: not done
+    - esa03:
+        - state: not done
+    - esa04:
+        - state: not done
+    - esa05:
+        - state: not done
+    - esa06:
+        - state: not done
+    - esa07:
+        - state: not done
+    - esa08:
+        - state: not done
+    - esa09:
+        - state: not done
+    - esa10:
+        - state: not done
+    - esa11:
+        - state: not done
+    - est01:
+        - state: done
+    - est02:
+        - state: done
+    - est04:
+        - state: done
+    - est08:
+        - state: not done
+    - est10:
+        - state: done
+- application_class: 2
