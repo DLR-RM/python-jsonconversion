@@ -46,8 +46,7 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
         if '__jsonqualname__' in dictionary:
             # e.g. rafcon.statemachine.states.execution_state.ExecutionState
             qualified_name = dictionary.pop('__jsonqualname__')
-            if qualified_name in self.substitute_modules:
-                qualified_name = self.substitute_modules[qualified_name]
+            qualified_name = self.substitute_modules.get(qualified_name, qualified_name)
             cls = get_class_from_qualified_name(qualified_name)
 
             # Maintain tuples instead of converting them to a list
@@ -74,7 +73,9 @@ class JSONObjectDecoder(json.decoder.JSONDecoder):
 
         # Handle type objects
         elif '__type__' in dictionary:
-            return string2type(dictionary['__type__'])
+            type_string = dictionary['__type__']
+            type_string = self.substitute_modules.get(type_string, type_string)
+            return string2type(type_string)
 
         # Try to convert dictionary keys to integers
         elif isinstance(dictionary, dict):
