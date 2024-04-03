@@ -28,7 +28,7 @@ classifiers = [
 dependencies = [
     "pytest-runner>=6.0.0",
     "numpy<2.0.0,>=1.22.4",
-    "pytest>=6.0.0,<7.0.0",
+    "pytest",
 ]
 license = {text = "BSD"}
 requires-python = ">=3.7"
