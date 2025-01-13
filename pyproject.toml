@@ -1,6 +1,6 @@
 [project]
 name = "jsonconversion"
-version = "1.0.1"
+version = "1.0.2"
 description = "This python module helps converting arbitrary Python objects into JSON strings and back."
 keywords = ["json", "conversion", "serialization"]
 readme = "README.rst"
@@ -27,11 +27,11 @@ classifiers = [
 ]
 dependencies = [
     "pytest-runner>=6.0.0",
-    "numpy<2.0.0,>=1.22.4",
-    "pytest>=6.0.0,<7.0.0",
+    "numpy>=2.0.0",
+    "pytest>=6.0.0",
 ]
 license = {text = "BSD"}
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 [project.urls]
 Homepage = "https://github.com/DLR-RM/python-jsonconversion"
