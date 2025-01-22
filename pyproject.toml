@@ -1,6 +1,6 @@
 [project]
 name = "jsonconversion"
-version = "1.0.2"
+version = "1.0.3"
 description = "This python module helps converting arbitrary Python objects into JSON strings and back."
 keywords = ["json", "conversion", "serialization"]
 readme = "README.rst"
