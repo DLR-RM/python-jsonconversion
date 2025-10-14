@@ -1,6 +1,6 @@
 [project]
 name = "jsonconversion"
-version = "1.1.1"
+version = "1.1.2"
 description = "This python module helps converting arbitrary Python objects into JSON strings and back."
 keywords = ["json", "conversion", "serialization"]
 readme = "README.rst"
@@ -26,8 +26,7 @@ classifiers = [
     "Topic :: Utilities"
 ]
 dependencies = [
-    "numpy (>=2.0,<3.0) ; python_version >= '3.11'",
-    "numpy (>=1.26,<2.0) ; python_version < '3.11'",
+    "numpy (>=1.26,<3.0)",
 ]
 license = {text = "BSD"}
 requires-python = ">=3.9"
