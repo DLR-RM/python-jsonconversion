@@ -1,8 +1,0 @@
-context: conan
-configurations:
-#  - any:
-#      build_type: {Debug, RelWithDebInfo, Release}
-#      shared: {False, True}
-  - imports:
-      - linux_defaults
-#  - ubuntu14.04-armhf-gcc4.9:
