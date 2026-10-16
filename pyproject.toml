@@ -1,9 +1,9 @@
 [project]
 name = "jsonconversion"
-version = "1.2.1"
+version = "2.0.0"
 description = "This python module helps converting arbitrary Python objects into JSON strings and back."
 keywords = ["json", "conversion", "serialization"]
-readme = "README.rst"
+readme = "README.md"
 authors = [
     {name = "Franz Steinmetz", email = "franz.steinmetz@dlr.de"},
     {name = "Johannes Ernst", email = "j.ernst@dlr.de"}
