@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2017 DLR
+# Copyright (C) 2016-2026 DLR
 #
 # All rights reserved. This program and the accompanying materials are made
 # available under the terms of the 2-Clause BSD License ("Simplified BSD
@@ -7,6 +7,7 @@
 #
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
+# Johannes Ernst <j.ernst@dlr.de>
 
 import sys
 from pydoc import locate, ErrorDuringImport
@@ -15,10 +16,13 @@ from inspect import isclass
 from jsonconversion import basestring, builtins, PY2_BUILTINS_STR, PY3_BUILTINS_STR
 
 
-def string2type(string_value):
+def string2type(string_value, allow_untrusted=False):
     """Converts a string into a type or class
 
+    Make sure to use the allow_untrusted flag only with secure imports!
+
     :param string_value: the string to be converted, e.g. "int"
+    :param allow_untrusted: flag to allow to import and locate untrusted classes or types
     :return: The type derived from string_value, e.g. int
     """
     # If the parameter is already a type, return it
@@ -36,25 +40,26 @@ def string2type(string_value):
         if type(obj) is type:
             return obj
 
-    if isinstance(string_value, basestring) and '.' in string_value:
-        return get_class_from_qualified_name(string_value)
+    if allow_untrusted:
+        if isinstance(string_value, basestring) and '.' in string_value:
+            return get_class_from_qualified_name(string_value, allow_untrusted=allow_untrusted)
 
-    # If not, try to locate the module
-    try:
-        obj = locate(string_value)
-    except ErrorDuringImport as e:
-        raise ValueError("Unknown type '{0}'".format(e))
+        # If not, try to locate the module
+        try:
+            obj = locate(string_value)
+        except ErrorDuringImport as e:
+            raise ValueError(f"Unrecognized serialized type '{e}'")
 
-    # Check whether object is a type
-    if type(obj) is type:
-        return locate(string_value)
+        # Check whether object is a type
+        if type(obj) is type:
+            return locate(string_value)
 
-    # Check whether object is a class
-    if isclass(obj):
-        return obj
+        # Check whether object is a class
+        if isclass(obj):
+            return obj
 
     # Raise error if none is the case
-    raise ValueError("Unknown type '{0}'".format(string_value))
+    raise ValueError(f"Not allowed to import untrusted class: {string_value}")
 
 
 def get_qualified_name_for_class(obj, builtins_str=None):
@@ -73,13 +78,19 @@ def get_qualified_name_for_class_object(obj, builtins_str=None):
     return module + '.' + obj.__class__.__name__
 
 
-def get_class_from_qualified_name(qualified_name):
+def get_class_from_qualified_name(qualified_name, allow_untrusted=False):
+    ''' This tries to import the package specified in qualified name (except for builtins).
+
+    Make sure to use the allow_untrusted flag only with secure imports!
+    '''
     parts = qualified_name.split('.')
     module_name = ".".join(parts[:-1])
     # First ensure, that the module is imported
     if module_name in ['builtins', '__builtin__']:
         cls = builtins
     else:
+        if not allow_untrusted:
+            raise ValueError(f"Not allowed to import untrusted class: {qualified_name}")
         cls = __import__(module_name)
     # Find nested class
     for comp in parts[1:]:
