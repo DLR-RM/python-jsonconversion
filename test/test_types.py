@@ -7,8 +7,12 @@
 #
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
+# Johannes Ernst <j.ernst@dlr.de>
+#
+# Code refinement and review were performed with the assistance of generative AI.
 
-from testing_utils import convert_with_assertion
+
+from testing_utils import convert_with_assertion as _convert_with_assertion
 
 
 class Custom(object):
@@ -18,6 +22,10 @@ class Custom(object):
 class Custom2:
     def __init__(self):
         pass
+
+
+def convert_with_assertion(var):
+    return _convert_with_assertion(var, allowed_types={__name__ + ".Custom": Custom, __name__ + ".Custom2": Custom2})
 
 
 def test_types():

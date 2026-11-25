@@ -7,9 +7,13 @@
 #
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
+# Johannes Ernst <j.ernst@dlr.de>
+#
+# Code refinement and review were performed with the assistance of generative AI.
+
 
 from jsonconversion.jsonobject import JSONObject
-from testing_utils import convert_with_assertion
+from testing_utils import convert_with_assertion as _convert_with_assertion
 
 
 class JO(JSONObject):
@@ -32,6 +36,10 @@ class JO(JSONObject):
     def __str__(self):
         return "{0}: a = {1} {4}, b = {2} {5}, c = {3} {6}".format(self.__class__.__name__, self.a, self.b, self.c,
                                                                    type(self.a), type(self.b), type(self.c))
+
+
+def convert_with_assertion(var):
+    return _convert_with_assertion(var, allowed_classes={__name__ + ".JO": JO})
 
 
 def test_simple_objects():

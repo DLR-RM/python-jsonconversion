@@ -7,6 +7,10 @@
 #
 # Contributors:
 # Franz Steinmetz <franz.steinmetz@dlr.de>
+# Johannes Ernst <j.ernst@dlr.de>
+#
+# Code refinement and review were performed with the assistance of generative AI.
+
 
 from pytest import raises
 
@@ -15,7 +19,7 @@ import json
 from jsonconversion.decoder import JSONObjectDecoder
 from jsonconversion.encoder import JSONObjectEncoder
 
-from testing_utils import convert_with_assertion
+from testing_utils import convert_with_assertion, ALLOWED_TYPES
 
 
 def test_numbers():
@@ -31,8 +35,10 @@ def test_objects():
 
     convert_with_assertion(o)
 
-    assert object is json.loads('{"__type__": "__builtin__.object"}', cls=JSONObjectDecoder)
-    assert object is json.loads('{"__type__": "builtins.object"}', cls=JSONObjectDecoder)
+    assert object is json.loads('{"__type__": "__builtin__.object"}', cls=JSONObjectDecoder,
+                                allowed_types=ALLOWED_TYPES)
+    assert object is json.loads('{"__type__": "builtins.object"}', cls=JSONObjectDecoder,
+                                allowed_types=ALLOWED_TYPES)
 
 
 def test_builtin_str():
